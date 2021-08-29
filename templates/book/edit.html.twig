@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Редактировать книгу{% endblock %}
+
+{% block body %}
+    <h1>Редактировать книгу</h1>
+
+    {{ include('book/_form.html.twig', {'button_label': 'Обновить'}) }}
+
+    <a href="{{ path('book_index') }}">Вернуться к списку книг</a>
+
+    {{ include('book/_delete_form.html.twig') }}
+{% endblock %}

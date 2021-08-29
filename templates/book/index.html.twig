@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Список книг{% endblock %}
+
+{% block body %}
+    <h1 class='display-1'>Список книг</h1>
+{% if is_granted('ROLE_USER') %}
+        <a class="btn btn-primary my-2" role="button" href="{{ path('book_new') }}">Добавить книгу</a>
+    {% endif %}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Обложка</th>
+                <th>Название</th>
+                <th>Автор</th>
+                <th>Файл</th>
+                <th>Дата прочтения</th>
+                {% if is_granted('ROLE_USER') %}
+                    <th>Действия</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+        {% for book in books %}
+            <tr>
+                <td><img src="{{ asset('bookCovers/' ~ book.cover) }}" class="img-fluid img-thumbnail" alt=""></td>
+                <td>{{ book.name }}</td>
+                <td>{{ book.author }}</td>
+                <td><a class="btn btn-outline-secondary my-2" role="button" href="{{ asset('bookFiles/' ~ book.file) }}">Скачать файл с книгой<a/></td>
+                <td>{{ book.readDate ? book.readDate|date('Y-m-d H:i:s') : '' }}</td>
+                {% if is_granted('ROLE_USER') %}
+                <td>
+                    <a class="btn btn-success my-2" role="button" href="{{ path('book_edit', {'id': book.id}) }}">Редактировать</a>
+                    <form method="post" action="{{ path('book_delete', {'id': book.id}) }}" onsubmit="return confirm('Вы уверены, что хотите удалить данную книгу из списка?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ book.id) }}">
+                        <button class="btn btn btn-outline-danger">Удалить</button>
+                    </form>
+                </td>
+                {% endif %}
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">Список книг пуст</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
